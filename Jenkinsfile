@@ -7,12 +7,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/vasutkar-0/Springboot_app_nexus.git'
-            }
-        }
-
         stage('Build & Deploy to Nexus') {
             steps {
                 withCredentials([
@@ -34,6 +28,15 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build & deployment to Nexus successful'
+        }
+        failure {
+            echo 'Build failed'
         }
     }
 }
