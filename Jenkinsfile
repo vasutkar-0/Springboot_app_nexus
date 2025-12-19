@@ -9,7 +9,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/vasutkar-0/Springboot_app.git'
+                git 'https://github.com/vasutkar-0/Springboot_app_nexus.git'
             }
         }
 
