@@ -2,33 +2,40 @@ pipeline {
     agent any
 
     environment {
-        COMPOSE_PROJECT_NAME = "sample-java"
+        NEXUS_CREDENTIALS_ID = 'nexus-jenkins-creds'
     }
 
     stages {
 
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                echo "Code already checked out from SCM"
+                git 'https://github.com/vasutkar-0/Springboot_app.git'
             }
         }
 
-        stage('Build & Deploy using Docker Compose') {
+        stage('Build & Deploy to Nexus') {
             steps {
-                sh '''
-                  docker compose down || true
-                  docker compose up -d --build
-                '''
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: "${NEXUS_CREDENTIALS_ID}",
+                        usernameVariable: 'NEXUS_USER',
+                        passwordVariable: 'NEXUS_PASS'
+                    )
+                ]) {
+                    sh '''
+                        mvn clean deploy -DskipTests
+                    '''
+                }
             }
         }
     }
 
     post {
         success {
-            echo "Deployment Successful 🚀"
+            echo 'Build and deployment to Nexus successful'
         }
         failure {
-            echo "Deployment Failed ❌"
+            echo 'Build or deployment failed'
         }
     }
 }
