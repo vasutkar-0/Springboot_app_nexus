@@ -6,6 +6,8 @@ pipeline {
 
     environment {
         NEXUS_CREDENTIALS_ID = 'nexus-jenkins-creds'
+        JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
 
     stages {
