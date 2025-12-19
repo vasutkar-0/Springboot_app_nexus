@@ -9,7 +9,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/vasutkar-0/Springboot_app_nexus.git'
+                git 'https://github.com/vasutkar-0/Springboot_app.git'
             }
         }
 
@@ -22,20 +22,18 @@ pipeline {
                         passwordVariable: 'NEXUS_PASS'
                     )
                 ]) {
-                    sh '''
-                        mvn clean deploy -DskipTests
-                    '''
+                    configFileProvider([
+                        configFile(
+                            fileId: 'maven-settings-nexus',
+                            variable: 'MAVEN_SETTINGS'
+                        )
+                    ]) {
+                        sh '''
+                            mvn clean deploy -s $MAVEN_SETTINGS
+                        '''
+                    }
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Build and deployment to Nexus successful'
-        }
-        failure {
-            echo 'Build or deployment failed'
         }
     }
 }
